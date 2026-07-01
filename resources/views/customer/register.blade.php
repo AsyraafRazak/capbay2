@@ -75,7 +75,9 @@
             <div class="form-group" style="margin-bottom: 2rem;">
                 <label for="car_model" class="form-label">Select Car Model</label>
                 <select id="car_model" name="car_model" class="form-control form-select @error('car_model') is-invalid @enderror" required>
-                    <option value="CapBay Vroom" {{ old('car_model') === 'CapBay Vroom' ? 'selected' : '' }}>CapBay Vroom (RM 200,000.00) - 15% Promotion Available</option>
+                    <option value="CapBay Vroom" {{ old('car_model') === 'CapBay Vroom' ? 'selected' : '' }}>
+                        CapBay Vroom (RM 200,000.00){{ $vroomPromoAvailable ? ' - 15% Promotion Available' : ' - Promotion Fully Claimed' }}
+                    </option>
                     <option value="CapBay Lite" {{ old('car_model') === 'CapBay Lite' ? 'selected' : '' }}>CapBay Lite (RM 120,000.00)</option>
                     <option value="CapBay Sport" {{ old('car_model') === 'CapBay Sport' ? 'selected' : '' }}>CapBay Sport (RM 250,000.00)</option>
                 </select>
@@ -91,7 +93,11 @@
     </div>
 
     <div style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); text-align: center; line-height: 1.4;">
-        <p><strong>**Note on 15% discount for CapBay Vroom:</strong> The promotion is only applicable for the first 10 active customers who complete down payment requirements (min 10% of required down payment) and secure loan approval.</p>
+        @if($vroomPromoAvailable)
+            <p><strong>Note on 15% discount for CapBay Vroom:</strong> The promotion is only applicable for the first 10 active customers who complete down payment requirements (min 10% of car price = RM 20,000) and secure loan approval.</p>
+        @else
+            <p><strong>CapBay Vroom promotion has been fully claimed.</strong> All 10 promotional slots are taken. You may still register for a test drive at the standard price of RM 200,000.</p>
+        @endif
     </div>
 </div>
 @endsection

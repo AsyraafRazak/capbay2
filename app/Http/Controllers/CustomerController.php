@@ -12,7 +12,12 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('customer.register');
+        // Check if promo slots are still available (fewer than 10 active Vroom registrations)
+        $vroomPromoAvailable = Registration::where('car_model', 'CapBay Vroom')
+            ->where('status', '!=', 'cancelled')
+            ->count() < 10;
+
+        return view('customer.register', compact('vroomPromoAvailable'));
     }
 
     /**
