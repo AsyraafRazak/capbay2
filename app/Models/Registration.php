@@ -115,9 +115,9 @@ class Registration extends Model
             return false;
         }
 
-        // Standard down payment is 10% of RM 200,000 = RM 20,000 (2,000,000 cents).
-        // 10% of down payment is RM 2,000 (200,000 cents).
-        $minDownPaymentCents = 200000;
+        // Minimum down payment for promo is 10% of the car price directly.
+        // 10% of RM 200,000 = RM 20,000 (2,000,000 cents).
+        $minDownPaymentCents = 2000000;
 
         return $this->down_payment_paid_cents >= $minDownPaymentCents && $this->loan_approved;
     }

@@ -125,8 +125,7 @@
                            class="form-control @error('down_payment_paid') is-invalid @enderror" 
                            required>
                     <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">
-                        Standard down payment required: <strong>RM 20,000.00</strong> (10% of RM 200,000.00).<br>
-                        Min. required for promotion: <strong>RM 2,000.00</strong> (10% of standard down payment).
+                        Min. required for promotion: <strong>RM 20,000.00</strong> (10% of car price RM 200,000.00).
                     </span>
                     @error('down_payment_paid')
                         <div class="form-error">{{ $message }}</div>
