@@ -68,13 +68,13 @@ class RegistrationTest extends TestCase
      */
     public function test_customer_abc_scenario(): void
     {
-        // Customer A (1st to register, paid 20% down payment = RM 4,000 = 400000 cents, loan approved)
+        // Customer A (1st to register, paid 20% of car price = RM 40,000 = 4000000 cents, loan approved)
         $customerA = Registration::create([
             'customer_name' => 'Customer A',
             'customer_email' => 'customera@example.com',
             'customer_phone' => '0123456789',
             'car_model' => 'CapBay Vroom',
-            'down_payment_paid_cents' => 400000, 
+            'down_payment_paid_cents' => 4000000,
             'loan_approved' => true,
             'status' => 'registered',
         ]);
@@ -103,13 +103,13 @@ class RegistrationTest extends TestCase
             ]);
         }
 
-        // Customer C (11th to register, paid 10% down payment = RM 2,000 = 200000 cents, loan approved)
+        // Customer C (11th to register, paid 10% of car price = RM 20,000 = 2000000 cents, loan approved)
         $customerC = Registration::create([
             'customer_name' => 'Customer C',
             'customer_email' => 'customerc@example.com',
             'customer_phone' => '0123456789',
             'car_model' => 'CapBay Vroom',
-            'down_payment_paid_cents' => 200000,
+            'down_payment_paid_cents' => 2000000,
             'loan_approved' => true,
             'status' => 'registered',
         ]);
@@ -118,8 +118,8 @@ class RegistrationTest extends TestCase
         // Customer A: in top 10, eligible, meets conditions, gets discount
         $this->assertTrue($customerA->is_eligible);
         $this->assertTrue($customerA->meets_promotion_conditions);
-        $this->assertEquals(17000000, $customerA->final_price_cents); // RM 170k
-        $this->assertEquals(16600000, $customerA->loan_amount_cents); // RM 166k (170k - 4k)
+        $this->assertEquals(17000000, $customerA->final_price_cents); // RM 170k (15% off RM 200k)
+        $this->assertEquals(13000000, $customerA->loan_amount_cents); // RM 130k (170k - 40k DP)
 
         // Customer B: in top 10, eligible, but does not meet conditions (no DP, no loan approval)
         $this->assertTrue($customerB->is_eligible);
@@ -145,6 +145,6 @@ class RegistrationTest extends TestCase
         $this->assertTrue($customerC->is_eligible);
         $this->assertTrue($customerC->meets_promotion_conditions);
         $this->assertEquals(17000000, $customerC->final_price_cents); // RM 170k (Discount applied!)
-        $this->assertEquals(16800000, $customerC->loan_amount_cents); // RM 168k (170k - 2k DP) 
+        $this->assertEquals(15000000, $customerC->loan_amount_cents); // RM 150k (170k - 20k DP)
     }
 }
