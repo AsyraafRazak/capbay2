@@ -59,7 +59,11 @@ php artisan test
         ->pluck('id');
     ```
 
-### 3. Clear State Transitions
+### 3. Minimum Down Payment for Promotion
+- **Clarification**: The brief states customers must pay "at least 10% of the down payment". This was initially misread as 10% of the standard down payment (10% of RM 20,000 = RM 2,000). Upon re-reading, the correct interpretation is **10% of the car price directly** — i.e. 10% of RM 200,000 = **RM 20,000** minimum.
+- This has been corrected in the model (`$minDownPaymentCents = 2000000`) and reflected in the agent dashboard UI.
+
+### 4. Clear State Transitions
 We configured a state machine pattern with valid transition paths:
 - `registered` &rarr; `test_drive_scheduled` | `cancelled`
 - `test_drive_scheduled` &rarr; `test_drive_completed` | `cancelled`
@@ -71,11 +75,7 @@ Invalid transitions (e.g., straight from `registered` to `purchased` or reversin
 ---
 
 ## AI Tools Self-Correction Note
-- **AI Tool Used**: Antigravity (Gemini 3.5 Flash / Medium).
+- **AI Tool Used**: Antigravity (Gemini 3.5 Flash / Medium) for setup, Kiro for specific tasks
 - **Correction Example**: 
-  While generating the `RegistrationTest.php` feature file, the AI wrote an assertion checking that Customer C's loan amount after B's cancellation was `15,000,000` cents (RM 150,000). 
-  This was incorrect because:
-  - CapBay Vroom promo price = RM 170,000 (after 15% discount on RM 200,000).
-  - Customer C had paid 10% of standard down payment = RM 2,000.
-  - Therefore, the correct loan amount is: `RM 170,000 - RM 2,000 = RM 168,000` (`16,800,000` cents).
-  We corrected this unit test assertion from `15000000` to `16800000` to match the exact mathematical criteria.
+  The minimum down payment threshold for the promotion was initially implemented as **RM 2,000** — which was 10% of the standard down payment (RM 20,000), itself 10% of the car price. This was a misinterpretation. The brief states "paid for at least 10% of the down payment", where the down payment refers to 10% of RM 200,000 = RM 20,000. The correct minimum is therefore **RM 20,000**, not RM 2,000. The model constant was corrected from `200000` cents to `2000000` cents, and the agent dashboard checklist label and helper text were updated to match.
+
