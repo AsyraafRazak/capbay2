@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@title('CapBay Auto - Register for Test Drive')
+@section('title', 'CapBay Auto - Register for Test Drive')
 
 @section('content')
 <div class="hero-section">
-    <h1 class="hero-title">Step Into The Future</h1>
+    <h1 class="hero-title">Car Registration</h1>
     <p class="hero-subtitle">Experience our cutting-edge AI cars. Register below to book a premium test drive session with one of our specialized agents.</p>
 </div>
 

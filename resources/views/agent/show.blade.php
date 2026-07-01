@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@title('Customer Look-up - CapBay Auto')
+@section('title','CapBay Auto - Customer Look-up')
 
 @section('content')
 <div style="margin-bottom: 2rem;">

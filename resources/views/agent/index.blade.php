@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@title('Agent Dashboard - CapBay Auto')
+@section('Agent Dashboard - CapBay Auto')
 
 @section('content')
 <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
