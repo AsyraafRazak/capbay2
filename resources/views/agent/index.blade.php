@@ -13,6 +13,42 @@
     </div>
 </div>
 
+{{-- Stat Cards --}}
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+
+    {{-- Pending --}}
+    <div class="glass-card" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #c084fc;">Pending Action</span>
+        <span style="font-size: 2rem; font-weight: 800; color: var(--text-primary);">{{ number_format($pendingCount) }}</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Registered, scheduled, or completed</span>
+    </div>
+
+    {{-- Purchased --}}
+    <div class="glass-card" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #34d399;">Purchased</span>
+        <span style="font-size: 2rem; font-weight: 800; color: var(--text-primary);">{{ number_format($purchasedCount) }}</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Deals successfully closed</span>
+    </div>
+
+    {{-- Cancelled --}}
+    <div class="glass-card" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #fb7185;">Cancelled</span>
+        <span style="font-size: 2rem; font-weight: 800; color: var(--text-primary);">{{ number_format($cancelledCount) }}</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Registrations withdrawn</span>
+    </div>
+
+    {{-- Promo Slots --}}
+    <div class="glass-card glow" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; border-color: rgba(59,130,246,0.3);">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Vroom Promo Slots</span>
+        <span style="font-size: 2rem; font-weight: 800; color: var(--text-primary);">
+            {{ $promoSlotsRemaining }}
+            <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">/ 10</span>
+        </span>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Remaining 15% discount slots</span>
+    </div>
+
+</div>
+
 <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
     <form action="{{ route('agent.index') }}" method="GET" class="filters-bar">
         <div class="form-group" style="margin-bottom: 0;">

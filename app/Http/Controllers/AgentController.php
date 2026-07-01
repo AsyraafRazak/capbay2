@@ -43,7 +43,30 @@ class AgentController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('agent.index', compact('registrations'));
+        // --- Statistics (always across all records, ignoring active filters) ---
+
+        // Pending = registrations that still need agent action
+        $pendingCount = Registration::whereIn('status', ['registered', 'test_drive_scheduled', 'test_drive_completed'])->count();
+
+        // Purchased count
+        $purchasedCount = Registration::where('status', 'purchased')->count();
+
+        // Cancelled count
+        $cancelledCount = Registration::where('status', 'cancelled')->count();
+
+        // Promo slots remaining: 10 minus how many active CapBay Vroom registrations are in top 10
+        $activeVroomCount = Registration::where('car_model', 'CapBay Vroom')
+            ->where('status', '!=', 'cancelled')
+            ->count();
+        $promoSlotsRemaining = max(0, 10 - $activeVroomCount);
+
+        return view('agent.index', compact(
+            'registrations',
+            'pendingCount',
+            'purchasedCount',
+            'cancelledCount',
+            'promoSlotsRemaining'
+        ));
     }
 
     /**
