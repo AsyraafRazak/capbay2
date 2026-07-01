@@ -9,6 +9,7 @@ This project is a high-performance **Laravel 12** web application built for **Ca
 ### Prerequisites
 - **PHP 8.2+**
 - **Composer**
+- **MySQL** (included with XAMPP or Laragon)
 
 ### Installation Steps
 
@@ -17,17 +18,36 @@ This project is a high-performance **Laravel 12** web application built for **Ca
    ```bash
    composer install
    ```
-3. **Database Migration and Seeding**:
-   This app utilizes SQLite. To create the database, run migrations, and seed **50,000 mock registrations** (which runs in under 15 seconds):
+3. **Generate Application Key**:
+   ```bash
+   php artisan key:generate
+   ```
+4. **Create the MySQL database**:
+   Create a database named `capbay2` in MySQL (via phpMyAdmin or CLI):
+   ```sql
+   CREATE DATABASE capbay2;
+   ```
+5. **Configure `.env`**:
+   Ensure these values are set in your `.env` file:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=capbay2
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+6. **Database Migration and Seeding**:
+   Run migrations and seed **50,000 mock registrations**:
    ```bash
    php artisan migrate:fresh --seed
    ```
-4. **Run Server**:
+7. **Run Server**:
    Start the local development server:
    ```bash
    php artisan serve
    ```
-5. **Access Application**:
+8. **Access Application**:
    - **Customer Portal (Registration Form)**: Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) or `/register`
    - **Sales Agent Portal (Dashboard & Look-up)**: Visit [http://127.0.0.1:8000/agent](http://127.0.0.1:8000/agent)
 
