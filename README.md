@@ -1,59 +1,81 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CapBay Auto - Software Engineer Technical Assessment
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a high-performance **Laravel 12** web application built for **CapBay Auto Sdn. Bhd.** to manage test drive registrations, evaluate promotional discount eligibility for their latest AI car model (**CapBay Vroom**), and execute registration state transitions via an agent dashboard.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Setup and Run Instructions
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Prerequisites
+- **PHP 8.2+**
+- **Composer**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Installation Steps
 
-## Learning Laravel
+1. **Clone or Extract** the project source into your server directory (e.g., `c:\xampp\htdocs\capbay2`).
+2. **Install Dependencies** (if deploying clean):
+   ```bash
+   composer install
+   ```
+3. **Database Migration and Seeding**:
+   This app utilizes SQLite. To create the database, run migrations, and seed **50,000 mock registrations** (which runs in under 15 seconds):
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+4. **Run Server**:
+   Start the local development server:
+   ```bash
+   php artisan serve
+   ```
+5. **Access Application**:
+   - **Customer Portal (Registration Form)**: Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) or `/register`
+   - **Sales Agent Portal (Dashboard & Look-up)**: Visit [http://127.0.0.1:8000/agent](http://127.0.0.1:8000/agent)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Run Automated Tests
+Execute the PHPUnit feature tests verifying state transitions, calculations, and queue shifting:
+```bash
+php artisan test
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 📝 Technical Decisions & Assumptions
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Data Type for Money
+- **Choice**: Stored as **Integer representing cents** (`unsignedBigInteger` in database, cast to `integer` on model).
+- **Reasoning**: Floating point numbers (like PHP floats or SQL double/float) suffer from binary representation limitations under IEEE-754 standards (e.g. `0.1 + 0.2 = 0.30000000000000004`). In financial systems, even fractional cents discrepancies can compound into severe audit failures. Storing money in cents (as an integer) eliminates rounding errors. The application formats these integers to human-readable RM format only at the display level (e.g. `RM 200,000.00`).
 
-### Premium Partners
+### 2. Customer B / Customer C Queue Scenario
+- **Scenario Decision**: If Customer B (2nd to register) cancels, **Customer C (11th to register) becomes eligible** for the promotion.
+- **Reasoning**: 
+  - *Business Conversion*: A marketing promotion aims to sell 10 discounted cars. If a customer cancels, leaving that discount slot unused would result in lost sales velocity.
+  - *Dynamic Queue Design*: Real-world waitlists automatically elevate the next active customer. By evaluating eligibility dynamically based on the first 10 *non-cancelled* registrations (`status != 'cancelled'`), Customer C shifts up the queue and receives the discount slot.
+  - *Code Implementation*: Eligible IDs are fetched dynamically via:
+    ```php
+    Registration::where('car_model', 'CapBay Vroom')
+        ->where('status', '!=', 'cancelled')
+        ->orderBy('id', 'asc')
+        ->limit(10)
+        ->pluck('id');
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. Clear State Transitions
+We configured a state machine pattern with valid transition paths:
+- `registered` &rarr; `test_drive_scheduled` | `cancelled`
+- `test_drive_scheduled` &rarr; `test_drive_completed` | `cancelled`
+- `test_drive_completed` &rarr; `purchased` | `cancelled`
+- `purchased` (Terminal state)
+- `cancelled` (Terminal state)
+Invalid transitions (e.g., straight from `registered` to `purchased` or reversing from `cancelled` back to `registered`) are rejected at the database/model layer with an `InvalidStateTransitionException` and handled gracefully in the UI.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## AI Tools Self-Correction Note
+- **AI Tool Used**: Antigravity (Gemini 3.5 Flash / Medium).
+- **Correction Example**: 
+  While generating the `RegistrationTest.php` feature file, the AI wrote an assertion checking that Customer C's loan amount after B's cancellation was `15,000,000` cents (RM 150,000). 
+  This was incorrect because:
+  - CapBay Vroom promo price = RM 170,000 (after 15% discount on RM 200,000).
+  - Customer C had paid 10% of standard down payment = RM 2,000.
+  - Therefore, the correct loan amount is: `RM 170,000 - RM 2,000 = RM 168,000` (`16,800,000` cents).
+  We corrected this unit test assertion from `15000000` to `16800000` to match the exact mathematical criteria.
