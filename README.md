@@ -31,6 +31,20 @@ This project is a high-performance **Laravel 12** web application built for **Ca
    - **Customer Portal (Registration Form)**: Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) or `/register`
    - **Sales Agent Portal (Dashboard & Look-up)**: Visit [http://127.0.0.1:8000/agent](http://127.0.0.1:8000/agent)
 
+### Agent Credentials
+The seeder creates three agent accounts. All share the same password:
+
+| Name | Email | Password |
+|---|---|---|
+| Ahmad Faiz | ahmad.faiz@capbay.com | agent123 |
+| Nurul Aina | nurul.aina@capbay.com | agent123 |
+| Raj Kumar | raj.kumar@capbay.com | agent123 |
+
+To seed agents only (without wiping the database):
+```bash
+php artisan db:seed --class=AgentSeeder
+```
+
 ### Run Automated Tests
 Execute the PHPUnit feature tests verifying state transitions, calculations, and queue shifting:
 ```bash
