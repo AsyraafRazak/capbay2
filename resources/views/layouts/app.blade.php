@@ -18,7 +18,16 @@
                 </a>
                 <nav class="nav-links">
                     <a href="{{ route('customer.register') }}" class="nav-link {{ request()->routeIs('customer.register') ? 'active' : '' }}">Customer Register</a>
-                    <a href="{{ route('agent.index') }}" class="nav-link {{ request()->routeIs('agent.*') ? 'active' : '' }}">Agent Dashboard</a>
+                    @auth
+                        <a href="{{ route('agent.index') }}" class="nav-link {{ request()->routeIs('agent.*') ? 'active' : '' }}">Agent Dashboard</a>
+                        <span class="nav-link" style="color: var(--text-muted); cursor: default;">{{ Auth::user()->name }}</span>
+                        <form action="{{ route('agent.logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-secondary btn-sm" style="padding: 0.35rem 0.85rem;">Logout</button>
+                        </form>
+                    @else
+                        <a href="{{ route('agent.login') }}" class="nav-link {{ request()->routeIs('agent.login') ? 'active' : '' }}">Agent Login</a>
+                    @endauth
                 </nav>
             </div>
         </div>
