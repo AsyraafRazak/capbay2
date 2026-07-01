@@ -24,7 +24,7 @@
     <div class="glass-card glow">
         <div class="glass-card-header">
             <h2 class="glass-card-title">Test Drive Registration</h2>
-            <span class="badge badge-glow badge-registered">Promotion Active</span>
+            <span class="badge badge-glow badge-registered">New Model Promotion**</span>
         </div>
 
         <form action="{{ route('customer.store') }}" method="POST">
@@ -91,7 +91,7 @@
     </div>
 
     <div style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); text-align: center; line-height: 1.4;">
-        <p><strong>Note on 15% discount for CapBay Vroom:</strong> The promotion is only applicable for the first 10 active customers who complete down payment requirements (min 10% of required down payment) and secure loan approval.</p>
+        <p><strong>**Note on 15% discount for CapBay Vroom:</strong> The promotion is only applicable for the first 10 active customers who complete down payment requirements (min 10% of required down payment) and secure loan approval.</p>
     </div>
 </div>
 @endsection
