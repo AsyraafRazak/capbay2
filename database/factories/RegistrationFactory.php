@@ -17,29 +17,31 @@ class RegistrationFactory extends Factory
      */
     public function definition(): array
     {
-        $carModel = $this->faker->randomElement(['CapBay Vroom', 'CapBay Vroom', 'CapBay Vroom', 'CapBay Vroom', 'CapBay Lite', 'CapBay Sport']);
-        $priceCents = $carModel === 'CapBay Vroom' ? 20000000 : ($carModel === 'CapBay Lite' ? 12000000 : 25000000);
-        
-        // Down payment distributions
-        $dpPaidCents = $this->faker->randomElement([
+        // CapBay Vroom is the current promotional model — past records only have Lite and Sport
+        $carModel = $this->faker->randomElement(['CapBay Lite', 'CapBay Lite', 'CapBay Sport']);
+        $priceCents = $carModel === 'CapBay Lite' ? 12000000 : 25000000;
+
+        // Down payment distributions relative to each model's price
+        $dpOptions = [
             0,
             0,
-            $this->faker->numberBetween(10000, 150000), // RM 100 - RM 1500
-            200000, // RM 2000 (Exactly 10% of DP for Vroom)
-            400000, // RM 4000 (20% of DP)
-            2000000, // RM 20,000 (Full DP)
-        ]);
+            $this->faker->numberBetween(100000, 500000),  // RM 1,000 - RM 5,000 (partial)
+            (int) round($priceCents * 0.10),               // Exact 10% of car price
+            (int) round($priceCents * 0.20),               // 20% of car price
+            (int) round($priceCents * 0.50),               // 50% of car price
+        ];
+        $dpPaidCents = $this->faker->randomElement($dpOptions);
 
         return [
-            'customer_name' => $this->faker->name(),
-            'customer_email' => $this->faker->unique()->safeEmail(),
-            'customer_phone' => $this->faker->phoneNumber(),
-            'car_model' => $carModel,
-            'price_cents' => $priceCents,
-            'down_payment_paid_cents' => $dpPaidCents,
-            'loan_approved' => $this->faker->boolean(50), // 50% chance of true
-            'status' => $this->faker->randomElement(['registered', 'test_drive_scheduled', 'test_drive_completed', 'purchased', 'cancelled']),
-            'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
+            'customer_name'            => $this->faker->name(),
+            'customer_email'           => $this->faker->unique()->safeEmail(),
+            'customer_phone'           => $this->faker->phoneNumber(),
+            'car_model'                => $carModel,
+            'price_cents'              => $priceCents,
+            'down_payment_paid_cents'  => $dpPaidCents,
+            'loan_approved'            => $this->faker->boolean(50),
+            'status'                   => $this->faker->randomElement(['registered', 'test_drive_scheduled', 'test_drive_completed', 'purchased', 'cancelled']),
+            'created_at'               => $this->faker->dateTimeBetween('-2 years', '-1 month'),
         ];
     }
 }
