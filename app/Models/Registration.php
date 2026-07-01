@@ -27,6 +27,14 @@ class Registration extends Model
         'down_payment_paid_cents' => 'integer',
     ];
 
+    protected $attributes = [
+        'car_model' => 'CapBay Vroom',
+        'price_cents' => 20000000,
+        'down_payment_paid_cents' => 0,
+        'loan_approved' => false,
+        'status' => 'registered',
+    ];
+
     // Define valid transitions from each state
     private static array $validTransitions = [
         'registered' => ['test_drive_scheduled', 'cancelled'],
